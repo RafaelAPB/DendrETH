@@ -20,6 +20,10 @@
     mcl-blockchain.url = "github:metacraft-labs/nix-blockchain-development";
     nixpkgs.follows = "mcl-blockchain/nixpkgs";
     flake-utils.follows = "mcl-blockchain/flake-utils";
+
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    rust-overlay.inputs.flake-utils.follows = "flake-utils";
   };
 
   outputs = {
@@ -27,11 +31,16 @@
     nixpkgs,
     flake-utils,
     mcl-blockchain,
+    rust-overlay,
   }:
     flake-utils.lib.simpleFlake {
       inherit self nixpkgs;
       name = "DendrETH";
       shell = ./shell.nix;
-      preOverlays = [mcl-blockchain.overlays.default];
+      preOverlays = [
+        mcl-blockchain.overlays.default
+        (import rust-overlay)
+      ];
+      overlay = ./overlay.nix;
     };
 }

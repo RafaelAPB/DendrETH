@@ -52,8 +52,10 @@ in
       # llvm.llvm
       # llvm.lld
       ldc
-      nim
-      nim-wasm
+
+      # For using with parity ink
+      cargo-contract
+      dylint
     ];
 
     shellHook = ''
@@ -65,6 +67,8 @@ in
       cp -r $(dirname $(which emcc))/../share/emscripten/cache $PWD/.emscripten_cache
       chmod u+rwX -R $PWD/.emscripten_cache
       export EM_CACHE=$PWD/.emscripten_cache
+
+      export C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include"
 
       figlet "DendrETH"
     '';
