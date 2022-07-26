@@ -54,6 +54,11 @@ in
       ldc
       nim
       nim-wasm
+
+      nix-tree
+
+      metacraft-labs.solana
+      criterion # needed for solana
     ];
 
     shellHook = ''
@@ -65,6 +70,9 @@ in
       cp -r $(dirname $(which emcc))/../share/emscripten/cache $PWD/.emscripten_cache
       chmod u+rwX -R $PWD/.emscripten_cache
       export EM_CACHE=$PWD/.emscripten_cache
+
+      export C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include:${criterion.dev}/include"
+      export LIBRARY_PATH="${glibc.dev}/lib"
 
       figlet "DendrETH"
     '';
