@@ -56,12 +56,20 @@ in
       nim-wasm
 
       nix-tree
-
+    ] ++ lib.optionals (!stdenv.isDarwin) [
+      # Solana is still not compatible with macOS on M1
       metacraft-labs.solana
       criterion # needed for solana
     ];
 
-    shellHook = ''
+
+    shellHook = if (!stdenv.isDarwin) then
+    ''
+      export C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include:${criterion.dev}/include"
+      export LIBRARY_PATH="${glibc.dev}/lib"
+    '' else ""
+    +
+    ''
       export NODE_OPTIONS="--experimental-vm-modules"
       export PATH="$PATH:$PWD/node_modules/.bin";
       export CC=clang
@@ -71,8 +79,6 @@ in
       chmod u+rwX -R $PWD/.emscripten_cache
       export EM_CACHE=$PWD/.emscripten_cache
 
-      export C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include:${criterion.dev}/include"
-      export LIBRARY_PATH="${glibc.dev}/lib"
 
       figlet "DendrETH"
     '';
