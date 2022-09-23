@@ -58,7 +58,12 @@ in
       dylint
     ];
 
-    shellHook = ''
+    shellHook = if (!stdenv.isDarwin) then ''
+      export
+      C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include"
+    '' else ""
+    +
+    ''
       export NODE_OPTIONS="--experimental-vm-modules"
       export PATH="$PATH:$PWD/node_modules/.bin";
       export CC=clang
@@ -67,8 +72,6 @@ in
       cp -r $(dirname $(which emcc))/../share/emscripten/cache $PWD/.emscripten_cache
       chmod u+rwX -R $PWD/.emscripten_cache
       export EM_CACHE=$PWD/.emscripten_cache
-
-      export C_INCLUDE_PATH="${nim-unwrapped}/nim/lib:${glibc.dev}/include"
 
       figlet "DendrETH"
     '';
