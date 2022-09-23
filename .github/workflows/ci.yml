@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  Tests:
+  nim-light-client-wasm-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,8 +18,17 @@ jobs:
 
       - uses: ./.github/actions/build-nix-dev-shell
 
-      - name: Run emsctipten tests
+      - name: Run Nim Beacon Chain Light Client WebAssembly tests
         run: nix develop -c yarn test-emcc
 
-      #- name: Run tests
-      #  run: nix develop -c yarn test
+  circom-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - uses: ./.github/actions/build-nix-dev-shell
+
+      - name: Run circom tests
+        run: cd beacon-light-client/circom && nix develop -c yarn hardhat test
