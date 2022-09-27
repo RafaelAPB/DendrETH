@@ -24,8 +24,6 @@ template LightClient(N) {
 
   signal input fork_version[32];
 
-  signal input prevHeaderState[256];
-
   signal input points[N][2][K];
   signal input aggregatedKey[384];
   signal input branch[5][256];
@@ -156,7 +154,7 @@ template LightClient(N) {
   }
 
   for(var i = 0; i < 256; i++) {
-    isValidMerkleBranch.root[i] <== prevHeaderState[i];
+    isValidMerkleBranch.root[i] <== state_root[i];
   }
 
   isValidMerkleBranch.index <== 55;
