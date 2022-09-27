@@ -5,6 +5,10 @@ include "compress.circom";
 include "aggregate_bitmask.circom";
 include "is_supermajority.circom";
 include "is_valid_merkle_branch.circom";
+include "hash_tree_root_beacon_header.circom";
+include "compute_domain.circom";
+include "compute_signing_root.circom";
+include "hash_to_field.circom";
 include "../../../vendor/circom-pairing/circuits/bls_signature.circom";
 
 template LightClient(N) {
@@ -41,25 +45,25 @@ template LightClient(N) {
   num2bits2.in <== prevHeaderHashNum[1];
 
   for(var i = 0; i < 253; i++) {
-    prevHeaderHash[i] <== num2bits1.out[252 - i];
+    prevHeaderHash[i] = num2bits1.out[252 - i];
   }
 
   for(var i = 253; i < 256; i++) {
-    prevHeaderHash[i] <== num2bits2.out[255 - i];
+    prevHeaderHash[i] = num2bits2.out[255 - i];
   }
 
   component num2bits3 = Num2Bits(253);
   num2bits3.in <== nextHeaderHashNum[0];
 
   for(var i = 0; i < 253; i++) {
-    nextHeaderHash[i] <== num2bits3.out[253 - i];
+    nextHeaderHash[i] = num2bits3.out[252 - i];
   }
 
   component num2bits4 = Num2Bits(3);
   num2bits4.in <== nextHeaderHashNum[1];
 
   for(var i = 253; i < 256; i++) {
-    nextHeaderHash[i] <== num2bits4.out[255 - i];
+    nextHeaderHash[i] = num2bits4.out[255 - i];
   }
 
   component isSuperMajority = IsSuperMajority(N);
